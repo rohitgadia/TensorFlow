@@ -66,4 +66,12 @@ with tf.Session() as sess:
 
     for iteration in range(num_training_iter):
         for (x,y) in zip(train_house_size_norm,train_house_price_norm):
-            sess.run(optimizer)
+            sess.run(optimizer,feed_dict={tf_house_size:x,tf_house_price:y})
+
+            if (iteration + 1) % display_every == 0 :
+                c = sess.run(tf_cost,feed_dict={tf_house_size: train_house_size_norm,tf_house_price: train_house_price_norm})
+                print("iteration #:", '%04d' % (iteration+1), "cost=","{:9f}".format(c),\
+                "size_factor=", sess.run(tf_size_factor),"price_offset=",sess.run(tf_price_offset))
+    print("Optimization finished")
+    training_cost = sess.run(tf_cost,feed_dict={tf_house_size: train_house_size_norm,tf_house_price: train_house_price_norm})
+    print("Trained cost=", training_cost, "size_factor=", sess.run(tf_size_factor), "price_offset=", sess.run(tf_price_offset))
